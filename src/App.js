@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { React, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { __getTodos } from "./redux/modules/todosSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  const { isLoading, error, todos } = useSelector((state) => state.todos);
+  // console.log("todos💛❤❤", todos);-> undefined???
+
+  useEffect(() => {
+    dispatch(__getTodos());
+  }, []);
+
+  //미리 걸러지게끔 옵셔널 체이닝도 필요없게끔
+  if (isLoading) {
+    return <div>로딩중..</div>;
+  }
+  if (error) {
+    return <div>{error.message}</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {todos.map((todo) => (
+        <div key={todo.id}>{todo.title}</div>
+      ))}
     </div>
   );
 }
